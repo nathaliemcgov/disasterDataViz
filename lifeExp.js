@@ -413,7 +413,7 @@ function onmouseover(d, i) {
 	var currClass = d3.select(this).attr("class");
 	d3.select(this).attr("class", currClass + " current");
 	var selector = '.'+d3.select(this).attr("country");
-	console.log(selector)
+	console.log(selector);
 	var otherElems = d3.selectAll(selector);
 	console.log(otherElems.data([0])[0]);
 	for(elm in otherElems) {
