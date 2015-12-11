@@ -107,59 +107,112 @@ d3.text('unemploymentCLEAN.csv','text/csv', function(text) {
 	}
 });
 
+d3.text('disasterIntensity.csv', 'text/csv', function(data) {
+	var disCountry = d3.csv.parseRows(data);
 
-d3.text('disasterYears.csv', 'text/csv', function(data) {
-	var disYears = d3.csv.parseRows(data);
-
-	for(i=4; i<disYears.length; i++) {
-		var yearData = disYears[i].slice(1);
-		var countryName = disYears[i][0]
-		var countryValues = nameAndValues[countryName];
-		console.log(countryValues)
+	for(i = 1; i < disCountry.length; i++) {
+		var countryCode = disCountry[i][0];
+		var intensities = disCountry[i].slice(1);
+		var countryValues = nameAndValues[countryCode];
 		if(typeof countryValues !== 'undefined') {
-			console.log("here: "+countryName)
-			if(typeof countryName!== 'undefined') {
-				vis.selectAll('.'+countryName)
-					.data(yearData)
-					.enter()
+			vis.selectAll('.'+countryCode)
+				.data(intensities)
+				.enter()
 					.append('circle')
-					.attr("cx", function(d) {
-						value = x(d);
-						yVal = y(countryValues[d]);
-						if(value == 0 || isNaN(yVal) || yVal==0) {
+					.attr("cx", function(d,i) {
+						year = 1990+i;
+						value = x(year);
+						yVal = y(countryValues[year]);
+						if(value == 0 || isNaN(yVal) || yVal==0 && d > 0) {
 							return null;
 						} else {
 							return value;
 						}
 					})
-		 			.attr("cy", function(d) {
-		 				value = y(countryValues[d]);
-		 				if(!isNaN(value) && value!=0) {
+		 			.attr("cy", function(d,i) {
+		 				year=1990+i
+		 				value = y(countryValues[year]);
+		 				if(!isNaN(value) && value!=0 && d > 0) {
 		 					return value;
 		 				} else {
 		 					return null;
 		 				}
 
 		 			})
-		 			.attr("r", .8)
-		 			.attr("class",function(d) {return countryName;})
-		 			//.style("fill", "black")
-		 			.attr("country", names[countryName]).attr("class", () => {
+		 			.attr("r", function(d) {
+		 				return d*(.4);
+		 			})
+		 			.style("fill", "rgb(255,0,0)")
+		 			.attr("country", names[countryCode]).attr("class", () => {
 						// Gets correct className based on development level
 						var className;
-						if (udevCountries.indexOf(countryName) > -1) {
+						if (udevCountries.indexOf(countryCode) > -1) {
 							className = 'UDEV';
-						} else if (devingCountries.indexOf(countryName) > -1) {
+						} else if (devingCountries.indexOf(countryCode) > -1) {
 							className = 'DEVING';
-						} else if (devCountries.indexOf(countryName) > -1) {
+						} else if (devCountries.indexOf(countryCode) > -1) {
 							className = 'DEV';
 						}
 						return className;
-					}).attr("id", countryName).on("mouseover",onmouseover).on("mouseout",onmouseout);
-		 	}
-	 	}
+					}).on("mouseover",onmouseoverDots).on("mouseout",onmouseoutDots);
+		}
 	}
-});
+})
+
+// d3.text('disasterYears.csv', 'text/csv', function(data) {
+// 	var disYears = d3.csv.parseRows(data);
+
+// 	for(i=4; i<disYears.length; i++) {
+// 		var yearData = disYears[i].slice(1);
+// 		var countryName = disYears[i][0]
+// 		var countryValues = nameAndValues[countryName];
+// 		console.log(countryName+countryValues)
+// 		if(typeof countryValues !== 'undefined') {
+// 			console.log("here: "+countryName)
+// 			if(typeof countryName!== 'undefined') {
+// 				vis.selectAll('.'+countryName)
+// 					.data(yearData)
+// 					.enter()
+// 					.append('circle')
+// 					.attr("cx", function(d) {
+// 						value = x(d);
+// 						yVal = y(countryValues[d]);
+// 						if(value == 0 || isNaN(yVal) || yVal==0) {
+// 							return null;
+// 						} else {
+// 							return value;
+// 						}
+// 					})
+// 		 			.attr("cy", function(d) {
+// 		 				value = y(countryValues[d]);
+// 		 				if(!isNaN(value) && value!=0) {
+// 		 					return value;
+// 		 				} else {
+// 		 					return null;
+// 		 				}
+
+// 		 			})
+// 		 			.attr("r", function(d) {
+
+// 		 			})
+// 		 			.attr("class",function(d) {return countryName;})
+// 		 			.style("fill", "rgb(255,0,0)")
+// 		 			.attr("country", names[countryName]).attr("class", () => {
+// 						// Gets correct className based on development level
+// 						var className;
+// 						if (udevCountries.indexOf(countryName) > -1) {
+// 							className = 'UDEV';
+// 						} else if (devingCountries.indexOf(countryName) > -1) {
+// 							className = 'DEVING';
+// 						} else if (devCountries.indexOf(countryName) > -1) {
+// 							className = 'DEV';
+// 						}
+// 						return className;
+// 					}).attr("id", countryName).on("mouseover",onmouseover).on("mouseout",onmouseout);
+// 		 	}
+// 	 	}
+// 	}
+// });
 
 // var disasterYear;
 // // Get the disaster data
@@ -301,6 +354,39 @@ function onmouseover(d, i) {
 }
 
 function onmouseout(d,i) {
+	var currClass=d3.select(this).attr("class");
+	var prevClass=currClass.substring(0, currClass.length - 8);
+	d3.select(this).attr("class", prevClass);
+	$("#default-blurb").show();
+	$("#blurb-content").html('');
+}
+
+function onmouseoverDots(d, i) {
+	var currClass = d3.select(this).attr("class");
+	var circs = d3.selectAll("."+currClass);
+	console.log(circs.length);
+	for(i=0; i < circs.length; i++) {
+		circs[i].attr("class", currClass+" current")
+	}
+	//circs.attr("class", currClass + " current");
+	//d3.select(this).attr("class", currClass + " current");
+
+	var country = $(this).attr("country");		// Gets the country hovered over
+	var countryCode = $(this).attr("id");
+	var countryVals = startEnd[countryCode];
+
+	var countryDisasterTotal = disasterTotals[countryCode];
+	
+	var blurb= '<h2>' + countryName[countryName.indexOf(country)] + '</h2>';
+	if (countryDisasterTotal) {	
+		blurb += "<p>Experienced " + countryDisasterTotal + " disasters from 1991 through 2014.</p>";
+	}
+
+	$("#default-blurb").hide();
+	$("#blurb-content").html(blurb);
+}
+
+function onmouseoutDots(d,i) {
 	var currClass=d3.select(this).attr("class");
 	var prevClass=currClass.substring(0, currClass.length - 8);
 	d3.select(this).attr("class", prevClass);

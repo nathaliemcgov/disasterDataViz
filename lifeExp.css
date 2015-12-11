@@ -75,16 +75,23 @@ a {
 	padding-top: 20px;
 }
 
-path, circle {
+path {
 	stroke: #e2e2e2;
 	stroke-width: 0.9;
 	fill: none;
 }
 
-path.current, path.highlight.current, circle.current, circle.current {
+path.current, path.highlight.current {
 	stroke: #000;
 	stroke-width: 1.7;
+}
 
+circle {
+	opacity: .2;
+}
+
+circle.current, circle.highlight.current {
+	opacity: 1;
 }
 
 .UDEV.highlight {
