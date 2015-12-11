@@ -228,7 +228,7 @@ d3.text('disasterIntensity.csv', 'text/csv', function(data) {
 						} else if (devCountries.indexOf(countryCode) > -1) {
 							className = 'DEV';
 						}
-						return className;
+						return className + ' ' + names[countryCode];
 					}).on("mouseover",onmouseover).on("mouseout",onmouseout);
 		}
 	}
@@ -409,8 +409,18 @@ d3.text('countryStatsForDisasters4andUp.csv', 'text/csv', function(data) {
 
 // Functionality of when user mouses over line
 function onmouseover(d, i) {
+	
 	var currClass = d3.select(this).attr("class");
 	d3.select(this).attr("class", currClass + " current");
+	var selector = '.'+d3.select(this).attr("country");
+	console.log(selector)
+	var otherElems = d3.selectAll(selector);
+	console.log(otherElems.data([0])[0]);
+	for(elm in otherElems) {
+		console.log(elm);
+		var otherClass = d3.select(elm).attr("class");
+		d3.select(elm).attr("class", otherClass + " current");
+	}
 
 	var country = $(this).attr("country");		// Gets the country hovered over
 	var countryCode = $(this).attr("id");
