@@ -10,6 +10,7 @@ body {
 h1 {
 	font-family: 'Bevan',serif;
 	font-size: 3.0em;
+	text-align: center;
 }
 
 h2 {
@@ -21,6 +22,7 @@ h2 {
 p {
 	line-height: 1.4em;
 	margin-bottom: 1.0em;
+	text-align: justify;
 }
 
 a {
@@ -33,8 +35,14 @@ a {
 }
 
 #filters {
-	font-family: Arial,sans-serif;
+	font-family: Arial, sans-serif;
+	float: left;
 	margin-bottom: 20px;
+	margin-left: 40px;
+}
+
+#filtersAndDropdown {
+	margin: 20px;
 }
 
 #filters a {
@@ -117,6 +125,11 @@ line {
 text {
 	font-family: Helvetica,Arial,sans-serif;
 	font-size: 11px;
+}
+
+#dropdown {
+	margin-right: 40px;
+	float: right;
 }
 
 .axis {

@@ -1,0 +1,6 @@
+- adding points to line when specific country chosen
+- y-axis
+- y-axis label
+- clearly defined points
+- change country segmentation colors
+- host on aws
