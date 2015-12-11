@@ -38,118 +38,147 @@ var nameAndValues = {};
 var countryNameToCode = {};
 
 var names = {};
+var values;
 
-// Called when dropdown country selector is changed
-$("#countryList").change(() => {
-	var dropDownValue = $("#countryList").val();		// Gets country name selected
-	//var countrySelected = true;
+d3.text('unemploymentCLEAN.csv','text/csv', function(text) {
+	var countryData = d3.csv.parseRows(text);
+	for(i = 1; i < countryData.length; i++) {
+		// Gets unemployment values of current row
+		values = countryData[i].slice(2, countryData[i.length]);
 
-	//renderLines(dropDownValue);
-	
-	// if (dropDownValue == 'Country Not Selected') {		// Display all countries
-	// 	countrySelected = false;
+		var currData = [];
+		var unemploymentValues = [];
+
+		var countryCode = countryData[i][1];
+
+		var singleCountryName = countryData[i][0];
+
+		countryName.push(singleCountryName);
+
+		countryNameToCode[singleCountryName] = countryCode;
+
+		var started = false;
+		// Loops through unemployment values of row
+		for(j = values.length - 1; j >= 0; j--) {
+			if(values[j]=='') {
+				values = values.slice(0, j - 1);
+			} else {
+				break;
+			}
+		}
+		names[countryCode] = singleCountryName;
+		nameAndValues[countryCode] = {};
+
+		for(j = 0; j < values.length; j++) {
+			nameAndValues[countryCode][years[j]] = values[j];
+
+			if (values[j] != '') {
+				// Unemployment values
+				unemploymentValues[j] = values[j];
+
+				currData.push({x : years[j], y : values[j]});
+				if(!started) {
+					startEnd[countryData[i][1]]={'startYear':years[j],'startVal':values[j]};
+					started = true;
+				} 
+				if (j==values.length-1) {
+					startEnd[countryData[i][1]]['endYear']=years[j];
+					startEnd[countryData[i][1]]['endVal']=values[j];
+				}
+			}
+		}
+
+		// Draws unemployment lines
+		drawUnemployment('Country Not Selected', nameAndValues, currData, countryData, countryCode, singleCountryName);
+
+		// Object to be used to get unemployment rates for each country "Country Code : Array of unemployment values"
+		//nameAndValues[countryCode] = unemploymentValues;
+
+		// vis.append("svg:circle").data([currData]).attr("country", countryData[i][0]).attr("class", () => {
+		// 	// Gets correct className based on development level
+		// 	var className;
+		// 	if (udevCountries.indexOf(countryCode) > -1) {
+		// 		className = 'UDEV';
+		// 	} else if (devingCountries.indexOf(countryCode) > -1) {
+		// 		className = 'DEVING';
+		// 	} else if (devCountries.indexOf(countryCode) > -1) {
+		// 		className = 'DEV';
+		// 	}
+		// 	return className;
+		// }).attr("id", countryCode).attr("d",circ).on("mouseover",onmouseover).on("mouseout",onmouseout);
+	}
+
+	// Adds country names to dropdown country selector
+	// for (i = 0; i < countryName.length; i++) {
+	// 	var country = '<option value=' + countryName[i] + '>' + countryName[i] + '</option>';
+	// 	$('#countryList').append(country);
 	// }
-})
 
-//function renderLines(dropDownValue) {
-	d3.text('unemploymentCLEAN.csv','text/csv', function(text) {
-		var countryData = d3.csv.parseRows(text);
-		for(i = 1; i < countryData.length; i++) {
-			// Gets unemployment values of current row
-			var values = countryData[i].slice(2, countryData[i.length]);
-			var currData = [];
-			var unemploymentValues = [];
-
-			var countryCode = countryData[i][1];
-			countryName.push(countryData[i][0]);
-
-			countryNameToCode[countryData[i][0]] = countryCode;
-
-			var started = false;
-			// Loops through unemployment values of row
-			for(j = values.length-1; j >= 0; j--) {
-				if(values[j]=='') {
-					values = values.slice(0, j - 1)
-				} else {
-					break;
-				}
-			}
-			names[countryCode] = countryData[i][0];
-			nameAndValues[countryCode] = {};
-
-			for(j = 0; j < values.length; j++) {
-				nameAndValues[countryCode][years[j]] = values[j]
-				if (values[j] != '') {
-					// Unemployment values
-					unemploymentValues[j] = values[j];
-
-					currData.push({x : years[j], y : values[j]});
-					if(!started) {
-						startEnd[countryData[i][1]]={'startYear':years[j],'startVal':values[j]};
-						started = true;
-					} 
-					if (j==values.length-1) {
-						startEnd[countryData[i][1]]['endYear']=years[j];
-						startEnd[countryData[i][1]]['endVal']=values[j];
-					}
-				}
-			}
-
-			// Draws unemployment lines
-			drawUnemployment(currData, countryData, i, countryCode);
-
-			// Object to be used to get unemployment rates for each country "Country Code : Array of unemployment values"
-			//nameAndValues[countryCode] = unemploymentValues;
-
-			// vis.append("svg:circle").data([currData]).attr("country", countryData[i][0]).attr("class", () => {
-			// 	// Gets correct className based on development level
-			// 	var className;
-			// 	if (udevCountries.indexOf(countryCode) > -1) {
-			// 		className = 'UDEV';
-			// 	} else if (devingCountries.indexOf(countryCode) > -1) {
-			// 		className = 'DEVING';
-			// 	} else if (devCountries.indexOf(countryCode) > -1) {
-			// 		className = 'DEV';
-			// 	}
-			// 	return className;
-			// }).attr("id", countryCode).attr("d",circ).on("mouseover",onmouseover).on("mouseout",onmouseout);
-		}
-
-		// Adds country names to dropdown country selector
-		// for (i = 0; i < countryName.length; i++) {
-		// 	var country = '<option value=' + countryName[i] + '>' + countryName[i] + '</option>';
-		// 	$('#countryList').append(country);
-		// }
-
-		var codeFromCountryName = countryNameToCode['France'];		// Gets country code
-
-		var getValuesForLine = nameAndValues[codeFromCountryName];	// Gets unemployment values for country
-
-		addToDropDown();	// Adds country names to dropdown
-	});
-//}
-
-// Draws out unemployment lines
-function drawUnemployment(currData, countryData, i, countryCode) {
-	vis.append("path").data([currData]).attr("country", countryData[i][0]).attr("class", () => {
-		// Gets correct className based on development level
-		var className;
-		if (udevCountries.indexOf(countryCode) > -1) {
-			className = 'UDEV';
-		} else if (devingCountries.indexOf(countryCode) > -1) {
-			className = 'DEVING';
-		} else if (devCountries.indexOf(countryCode) > -1) {
-			className = 'DEV';
-		}
-		return className;
-	}).attr("id", countryCode).attr("d",line).on("mouseover",onmouseover).on("mouseout",onmouseout);
-}
+	addToDropDown();	// Adds country names to dropdown
+});
 
 // Adds country names to dropdown country selector
 function addToDropDown() {
 	for (i = 0; i < countryName.length; i++) {
 		var country = '<option value=' + countryName[i] + '>' + countryName[i] + '</option>';
 		$('#countryList').append(country);
+	}
+}
+
+// Called when dropdown country selector is changed
+function changeCountry() {
+	var dropDownValue = $("#countryList").val();		// Gets country name selected
+	vis.selectAll("path").remove();
+	drawUnemployment(dropDownValue, nameAndValues, values);
+}
+
+// Draws out unemployment lines
+function drawUnemployment(dropDownValue, nameAndValues, currData, countryData, countryCode, singleCountryName) {
+	// If no country selected
+	if (dropDownValue == 'Country Not Selected' || typeof dropDownValue == 'undefined') {
+		vis.append("path").data([currData]).attr("country", singleCountryName).attr("class", () => {
+			// Gets correct className based on development level
+			var className;
+			if (udevCountries.indexOf(countryCode) > -1) {
+				className = 'UDEV';
+			} else if (devingCountries.indexOf(countryCode) > -1) {
+				className = 'DEVING';
+			} else if (devCountries.indexOf(countryCode) > -1) {
+				className = 'DEV';
+			}
+			return className;
+		}).attr("id", countryCode).attr("d",line).on("mouseover",onmouseover).on("mouseout",onmouseout);
+	} else {		// If country is selected
+
+		singleCountryName = dropDownValue;
+		countryCode = countryNameToCode[dropDownValue];		// Gets country code
+		currData = [];
+		values = nameAndValues[countryCode];
+		var getKeys = Object.keys(values);		// Gets years
+
+		var unempVals = [];
+		for (i = 0; i < getKeys.length; i++) {
+			unempVals.push(values[getKeys[i]]);
+		}
+
+		for (i = 0; i < unempVals.length; i++) {
+			if (unempVals[i] != '') {
+				currData.push({x : getKeys[i], y : unempVals[i]});
+			}
+		}
+		
+		vis.append("path").data([currData]).attr("country", singleCountryName).attr("class", () => {
+			// Gets correct className based on development level
+			var className;
+			if (udevCountries.indexOf(countryCode) > -1) {
+				className = 'UDEV';
+			} else if (devingCountries.indexOf(countryCode) > -1) {
+				className = 'DEVING';
+			} else if (devCountries.indexOf(countryCode) > -1) {
+				className = 'DEV';
+			}
+			return className;
+		}).attr("id", countryCode).attr("d",line).on("mouseover",onmouseover).on("mouseout",onmouseout);
 	}
 }
 
@@ -160,9 +189,9 @@ d3.text('disasterYears.csv', 'text/csv', function(data) {
 		var yearData = disYears[i].slice(1);
 		var countryName = disYears[i][0]
 		var countryValues = nameAndValues[countryName];
-		// console.log(countryValues)
+
 		if(typeof countryValues !== 'undefined') {
-			if(typeof countryName!== 'undefined') {
+			if(typeof countryName !== 'undefined') {
 				vis.selectAll('.'+countryName)
 					.data(yearData)
 					.enter()
