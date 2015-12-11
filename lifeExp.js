@@ -1,7 +1,7 @@
 // Making graph
 var regions = {"UDEV":"Underdeveloped","DEVING":"Developing","DEV":"Developed"}
-	,w=925,h=550,margin=30,startYear=1960,endYear=2015,startValue=0,endValue=45,y=d3.scale.linear().domain([endValue,startValue]).range
-	([0+ margin,h- margin]),x=d3.scale.linear().domain([1991,2014]).range([0+ margin-5,w]),years=d3.range(startYear,endYear);
+	,w=925,h=550,margin=30,startYear=1960,endYear=2013,startValue=0,endValue=45,y=d3.scale.linear().domain([endValue,startValue]).range
+	([0+ margin,h- margin]),x=d3.scale.linear().domain([1991,2013]).range([0+ margin-5,w]),years=d3.range(startYear,endYear);
 	
 var vis = d3.select("#vis").append("svg:svg").attr("width",w).attr("height",h).append("svg:g");
 
@@ -38,7 +38,7 @@ d3.text('unemploymentCLEAN.csv','text/csv', function(text) {
 	var countryData = d3.csv.parseRows(text);
 	for(i = 1; i < countryData.length; i++) {
 		// Gets unemployment values of current row
-		var values = countryData[i].slice(2, countryData[i.length-1]);
+		var values = countryData[i].slice(2, countryData[i.length]);
 		var currData = [];
 		var unemploymentValues = [];
 
@@ -47,6 +47,14 @@ d3.text('unemploymentCLEAN.csv','text/csv', function(text) {
 
 		var started = false;
 		// Loops through unemployment values of row
+		//console.log(countryCode + values)
+		for(j = values.length-1; j >= 0; j--) {
+			if(values[j]=='') {
+				values = values.slice(0,j-1)
+			} else {
+				break;
+			}
+		}
 		for(j = 0; j < values.length; j++) {
 			if (values[j] != '') {
 				// Unemployment values
@@ -56,27 +64,29 @@ d3.text('unemploymentCLEAN.csv','text/csv', function(text) {
 				if(!started) {
 					startEnd[countryData[i][1]]={'startYear':years[j],'startVal':values[j]};
 					started = true;
-				} else if (j==values.length-1) {
+				} 
+				if (j==values.length-1) {
 					startEnd[countryData[i][1]]['endYear']=years[j];
 					startEnd[countryData[i][1]]['endVal']=values[j];
+					//console.log(startEnd[countryData[i][1]])
 				}
 			}
 		}
 		// Object to be used to get unemployment rates for each country "Country Code : Array of unemployment values"
 		nameAndValues[countryCode] = unemploymentValues;
 
-		vis.append("path").data([currData]).attr("country", countryData[i][0]).attr("class", () => {
-			// Gets correct className based on development level
-			var className;
-			if (udevCountries.indexOf(countryCode) > -1) {
-				className = 'UDEV';
-			} else if (devingCountries.indexOf(countryCode) > -1) {
-				className = 'DEVING';
-			} else if (devCountries.indexOf(countryCode) > -1) {
-				className = 'DEV';
-			}
-			return className;
-		}).attr("id", countryCode).attr("d",line).on("mouseover",onmouseover).on("mouseout",onmouseout);
+		// vis.append("path").data([currData]).attr("country", countryData[i][0]).attr("class", () => {
+		// 	// Gets correct className based on development level
+		// 	var className;
+		// 	if (udevCountries.indexOf(countryCode) > -1) {
+		// 		className = 'UDEV';
+		// 	} else if (devingCountries.indexOf(countryCode) > -1) {
+		// 		className = 'DEVING';
+		// 	} else if (devCountries.indexOf(countryCode) > -1) {
+		// 		className = 'DEV';
+		// 	}
+		// 	return className;
+		// }).attr("id", countryCode).attr("d",line).on("mouseover",onmouseover).on("mouseout",onmouseout);
 
 		// vis.append("svg:circle").data([currData]).attr("country", countryData[i][0]).attr("class", () => {
 		// 	// Gets correct className based on development level
@@ -125,7 +135,7 @@ d3.text('disasterYears.csv', 'text/csv', function(data) {
 		 				}
 
 		 			})
-		 			.attr("r", .8)
+		 			.attr("r", 2)
 		 			.attr("class",function(d) {return countryName;})
 		 			.style("fill", "black")
 		 			.attr("country", countryName).attr("class", () => {
@@ -143,7 +153,7 @@ d3.text('disasterYears.csv', 'text/csv', function(data) {
 		 	}
 	 	}
 	}
-})
+});
 
 // var disasterYear;
 // // Get the disaster data
@@ -222,9 +232,11 @@ d3.text('disasterYears.csv', 'text/csv', function(data) {
 // });
 
 // Makes x axis
-vis.append("svg:line").attr("x1",x(1991)).attr("y1",y(startValue)).attr("x2",x(2013)).attr("y2",y(startValue)).attr("class","axis")
+vis.append("svg:line").attr("x1",x(1991)).attr("y1",y(startValue)).attr("x2",x(2012)).attr("y2",y(startValue)).attr("class","axis");
+vis.append("text").style("text-anchor","middle").text("Year").attr("x",450).attr("y",540);
 
 vis.append("svg:line").attr("x1",x(startYear)).attr("y1",y(startValue)).attr("x2",x(startYear)).attr("y2",y(endValue)).attr("class","axis")
+
 
 vis.selectAll(".xLabel").data(x.ticks(5)).enter().append("svg:text").attr("class","xLabel").text(String).attr("x",function(d) {
 	return x(d)
