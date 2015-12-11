@@ -44,13 +44,11 @@ d3.text('unemploymentCLEAN.csv','text/csv', function(text) {
 
 		var countryCode = countryData[i][1];
 		countryName.push(countryData[i][0]);
-
 		var started = false;
 		// Loops through unemployment values of row
-		//console.log(countryCode + values)
 		for(j = values.length-1; j >= 0; j--) {
 			if(values[j]=='') {
-				values = values.slice(0,j-1)
+				values = values.slice(0, j - 1)
 			} else {
 				break;
 			}
@@ -68,7 +66,6 @@ d3.text('unemploymentCLEAN.csv','text/csv', function(text) {
 				if (j==values.length-1) {
 					startEnd[countryData[i][1]]['endYear']=years[j];
 					startEnd[countryData[i][1]]['endVal']=values[j];
-					//console.log(startEnd[countryData[i][1]])
 				}
 			}
 		}
@@ -101,8 +98,22 @@ d3.text('unemploymentCLEAN.csv','text/csv', function(text) {
 		// 	return className;
 		// }).attr("id", countryCode).attr("d",circ).on("mouseover",onmouseover).on("mouseout",onmouseout);
 	}
+	for (i = 0; i < countryName.length; i++) {
+		var country = '<option value=' + countryName[i] + '>' + countryName[i] + '</option>';
+
+		$('#countryList').append(country);
+	}
 });
 
+// console.log(countryName);
+// $(document).ready(function() {
+// 	for (i = 0; i < countryName.length; i++) {
+// 		var country = '<option value=' + countryName[i] + '>' + countryName[i] + '</option>';
+// 		console.log(country);
+
+// 		//$('#countryList').append(country);
+// 	}
+// })
 
 d3.text('disasterYears.csv', 'text/csv', function(data) {
 	var disYears = d3.csv.parseRows(data);
@@ -112,7 +123,6 @@ d3.text('disasterYears.csv', 'text/csv', function(data) {
 		var countryName = disYears[i][0]
 		var countryValues = nameAndValues[countryName];
 		if(typeof countryValues !== 'undefined') {
-			console.log("here: "+countryName)
 			if(typeof countryName!== 'undefined') {
 				vis.selectAll('.'+countryName)
 					.data(yearData)
@@ -182,7 +192,6 @@ d3.text('disasterYears.csv', 'text/csv', function(data) {
 // 			// var xCoordMultiplier = 45.380;
 
 // 			var disasterUnempRate = countryValues[index];	// Unemployment rate of disaster
-// 			console.log(disasterUnempRate);
 // 			// X coordinate : Year of the disaster (disasterYear)
 // 			// Y coordinate : Umemployment rate of country of year of disaster (disasterUnempRate)
 
@@ -310,3 +319,13 @@ function showRegion(countryDev) {
 		countries.classed('highlight',true);
 	}
 }
+
+// $("#countryList").change(() => {
+// 	var getValue = $("#countryList").val();
+// 	console.log(getValue);
+// 	if (getValue == 'noCountry') {		// Display all countries
+
+// 	} else {		// Display single country
+
+// 	}
+// })
