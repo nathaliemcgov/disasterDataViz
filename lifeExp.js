@@ -34,7 +34,18 @@ d3.text('CountrySegmentationCLEAN.csv','text/csv', function(text) {
 var startEnd = {};
 var countryName = [];
 var nameAndValues = {};
+
 var names = {};
+
+$("#countryList").change(() => {
+	var getValue = $("#countryList").val();
+	var countrySelected = true;
+
+	if (getValue == 'noCountry') {		// Display all countries
+		countrySelected = false;
+	}
+})
+
 d3.text('unemploymentCLEAN.csv','text/csv', function(text) {
 	var countryData = d3.csv.parseRows(text);
 	for(i = 1; i < countryData.length; i++) {
@@ -45,13 +56,11 @@ d3.text('unemploymentCLEAN.csv','text/csv', function(text) {
 
 		var countryCode = countryData[i][1];
 		countryName.push(countryData[i][0]);
-
 		var started = false;
 		// Loops through unemployment values of row
-		//console.log(countryCode + values)
 		for(j = values.length-1; j >= 0; j--) {
 			if(values[j]=='') {
-				values = values.slice(0,j-1)
+				values = values.slice(0, j - 1)
 			} else {
 				break;
 			}
@@ -72,7 +81,6 @@ d3.text('unemploymentCLEAN.csv','text/csv', function(text) {
 				if (j==values.length-1) {
 					startEnd[countryData[i][1]]['endYear']=years[j];
 					startEnd[countryData[i][1]]['endVal']=values[j];
-					//console.log(startEnd[countryData[i][1]])
 				}
 			}
 		}
@@ -105,8 +113,12 @@ d3.text('unemploymentCLEAN.csv','text/csv', function(text) {
 		// 	return className;
 		// }).attr("id", countryCode).attr("d",circ).on("mouseover",onmouseover).on("mouseout",onmouseout);
 	}
-});
+	for (i = 0; i < countryName.length; i++) {
+		var country = '<option value=' + countryName[i] + '>' + countryName[i] + '</option>';
 
+		$('#countryList').append(country);
+	}
+});
 
 d3.text('disasterYears.csv', 'text/csv', function(data) {
 	var disYears = d3.csv.parseRows(data);
@@ -117,7 +129,6 @@ d3.text('disasterYears.csv', 'text/csv', function(data) {
 		var countryValues = nameAndValues[countryName];
 		console.log(countryValues)
 		if(typeof countryValues !== 'undefined') {
-			console.log("here: "+countryName)
 			if(typeof countryName!== 'undefined') {
 				vis.selectAll('.'+countryName)
 					.data(yearData)
@@ -161,81 +172,80 @@ d3.text('disasterYears.csv', 'text/csv', function(data) {
 	}
 });
 
-// var disasterYear;
-// // Get the disaster data
-// d3.text('disasterData.csv', 'text/csv', function(data) {
-//     var disasterData = d3.csv.parseRows(data);
-//     var disasterYear;
-// 	for(i = 1; i < disasterData.length; i++) {
-// 		var disasterValues = disasterData[i].slice(1, disasterData[i.length-1]);
+var disasterYear;
+// Get the disaster data
+d3.text('disasterData.csv', 'text/csv', function(data) {
+    var disasterData = d3.csv.parseRows(data);
+    var disasterYear;
+	for(i = 1; i < disasterData.length; i++) {
+		var disasterValues = disasterData[i].slice(1, disasterData[i.length-1]);
 
-// 		disasterYear = disasterData[i][10];		// Gets disaster year
-// 		var disasterCountryCode = disasterData[i][2];	// Gets disaster country code
+		disasterYear = disasterData[i][10];		// Gets disaster year
+		var disasterCountryCode = disasterData[i][2];	// Gets disaster country code
 
-// 		// Gets all of the unemployment values of the disaster country
-// 		var countryValues = nameAndValues[disasterCountryCode];
+		// Gets all of the unemployment values of the disaster country
+		var countryValues = nameAndValues[disasterCountryCode];
 
-// 		// vis.append("svg:circle")
-// 		// 	.data(disasterValues)
-// 		// 	.attr("cx", function(d) {return d;})
-// 		// 	.attr("cy", function(d) {return countryValues[2014-disasterYear];})
-// 		// 	.attr("r", 2)
-// 		// 	.style("fill", "black");
+		// vis.append("svg:circle")
+		// 	.data(disasterValues)
+		// 	.attr("cx", function(d) {return d;})
+		// 	.attr("cy", function(d) {return countryValues[2014-disasterYear];})
+		// 	.attr("r", 2)
+		// 	.style("fill", "black");
 
 
-// 		if (countryValues.length > 0) {			// If there are unemployment values for the country
-// 			var index = 2014 - disasterYear;	// Gets the index of the unemployment value we need at the correct year
-// 			// var xCoordMultiplier = 45.380;
+		if (countryValues.length > 0) {			// If there are unemployment values for the country
+			var index = 2014 - disasterYear;	// Gets the index of the unemployment value we need at the correct year
+			// var xCoordMultiplier = 45.380;
 
-// 			var disasterUnempRate = countryValues[index];	// Unemployment rate of disaster
-// 			console.log(disasterUnempRate);
-// 			// X coordinate : Year of the disaster (disasterYear)
-// 			// Y coordinate : Umemployment rate of country of year of disaster (disasterUnempRate)
+			var disasterUnempRate = countryValues[index];	// Unemployment rate of disaster
+			// X coordinate : Year of the disaster (disasterYear)
+			// Y coordinate : Umemployment rate of country of year of disaster (disasterUnempRate)
 
-// 			// vis.append("svg:circle")
-// 			// 	.attr("cx", 25 + (disasterYear - 1990)*35.57)
-// 			// 	.attr("cy", 520 - disasterUnempRate * 13.75)
-// 			// 	.attr("r", 2)
-// 			// 	.style("fill", "black");
+			// vis.append("svg:circle")
+			// 	.attr("cx", 25 + (disasterYear - 1990)*35.57)
+			// 	.attr("cy", 520 - disasterUnempRate * 13.75)
+			// 	.attr("r", 2)
+			// 	.style("fill", "black");
 
-// 			 // vis.append("svg:circle")
-// 			 // 	.data(disasterUnempRate)
-// 			 // 	.attr("cx", function(d) {return d;})
-// 			 // 	.attr("cy", function(d) {return d;})
-// 			 // 	.attr("r", 2)
-// 			 // 	.style("fill", "black");
+			 // vis.append("svg:circle")
+			 // 	.data(disasterUnempRate)
+			 // 	.attr("cx", function(d) {return d;})
+			 // 	.attr("cy", function(d) {return d;})
+			 // 	.attr("r", 2)
+			 // 	.style("fill", "black");
 
-// 			// vis.append("svg:circle").data([currData]).attr("country", countryData[i][0]).vis.append("svg:circle").data([currData]).attr("country", countryData[i][0]).attr("class", () => {
-// 			// 	// Gets correct className based on development level
-// 			// 	var className;
-// 			// 	if (udevCountries.indexOf(countryCode) > -1) {
-// 			// 		className = 'UDEV';
-// 			// 	} else if (devingCountries.indexOf(countryCode) > -1) {
-// 			// 		className = 'DEVING';
-// 			// 	} else if (devCountries.indexOf(countryCode) > -1) {
-// 			// 		className = 'DEV';
-// 			// 	}
-// 			// 	return className;
-// 			// }).attr("id", countryCode).attr("d",circ).on("mouseover",onmouseover).on("mouseout",onmouseout);.attr("id", countryCode).attr("d",line).on("mouseover",onmouseover).on("mouseout",onmouseout);
+			// vis.append("svg:circle").data([currData]).attr("country", countryData[i][0]).vis.append("svg:circle").data([currData]).attr("country", countryData[i][0]).attr("class", () => {
+			// 	// Gets correct className based on development level
+			// 	var className;
+			// 	if (udevCountries.indexOf(countryCode) > -1) {
+			// 		className = 'UDEV';
+			// 	} else if (devingCountries.indexOf(countryCode) > -1) {
+			// 		className = 'DEVING';
+			// 	} else if (devCountries.indexOf(countryCode) > -1) {
+			// 		className = 'DEV';
+			// 	}
+			// 	return className;
+			// }).attr("id", countryCode).attr("d",circ).on("mouseover",onmouseover).on("mouseout",onmouseout);.attr("id", countryCode).attr("d",line).on("mouseover",onmouseover).on("mouseout",onmouseout);
 
 
 			
-// 			// Trying to append points to graph
-// 			// vis.select(graphDisplay).append("svg").data(disasterUnempRate).attr("country", disasterCountryCode).attr("class", () => {
-// 			// 	// Gets correct className based on development level
-// 	  //       	var disasterClass;
-// 			// 	if (udevCountries.indexOf(disasterCountryCode) > -1) {
-// 			// 		disasterClass = 'UDEV';
-// 			// 	} else if (devCountries.indexOf(disasterCountryCode) > -1) {
-// 			// 		disasterClass = 'DEV';
-// 			// 	} else if (devingCountries.indexOf(disasterCountryCode) > -1) {
-// 			// 		disasterClass = 'DEVING';
-// 			// 	}
-// 			// 	return disasterClass;
-// 			// });
-// 		}
-// 	}
-// });
+			// Trying to append points to graph
+			// vis.select(graphDisplay).append("svg").data(disasterUnempRate).attr("country", disasterCountryCode).attr("class", () => {
+			// 	// Gets correct className based on development level
+	  //       	var disasterClass;
+			// 	if (udevCountries.indexOf(disasterCountryCode) > -1) {
+			// 		disasterClass = 'UDEV';
+			// 	} else if (devCountries.indexOf(disasterCountryCode) > -1) {
+			// 		disasterClass = 'DEV';
+			// 	} else if (devingCountries.indexOf(disasterCountryCode) > -1) {
+			// 		disasterClass = 'DEVING';
+			// 	}
+			// 	return disasterClass;
+			// });
+		}
+	}
+});
 
 // Makes x axis
 vis.append("svg:line").attr("x1",x(1991)).attr("y1",y(startValue)).attr("x2",x(2012)).attr("y2",y(startValue)).attr("class","axis");
