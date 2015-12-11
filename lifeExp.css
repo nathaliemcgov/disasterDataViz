@@ -36,9 +36,9 @@ a {
 
 #filters {
 	font-family: Arial, sans-serif;
-	float: left;
 	margin-bottom: 20px;
 	margin-left: 40px;
+	padding-left: 40px;
 }
 
 #filtersAndDropdown {
@@ -127,9 +127,13 @@ text {
 	font-size: 11px;
 }
 
+#filterTitle {
+	padding-left: 40px;
+	float: left;
+}
+
 #dropdown {
-	margin-right: 40px;
-	float: right;
+	margin-left: 40px;
 }
 
 .axis {
