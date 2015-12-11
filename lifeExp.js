@@ -34,6 +34,7 @@ d3.text('CountrySegmentationCLEAN.csv','text/csv', function(text) {
 var startEnd = {};
 var countryName = [];
 var nameAndValues = {};
+var names = {};
 d3.text('unemploymentCLEAN.csv','text/csv', function(text) {
 	var countryData = d3.csv.parseRows(text);
 	for(i = 1; i < countryData.length; i++) {
@@ -55,10 +56,13 @@ d3.text('unemploymentCLEAN.csv','text/csv', function(text) {
 				break;
 			}
 		}
+		names[countryCode] = countryData[i][0];
+		nameAndValues[countryCode] = {};
 		for(j = 0; j < values.length; j++) {
+			nameAndValues[countryCode][years[j]] = values[j]
 			if (values[j] != '') {
 				// Unemployment values
-				unemploymentValues.push(values[j]);
+				unemploymentValues[j] = values[j];
 
 				currData.push({x : years[j], y : values[j]});
 				if(!started) {
@@ -73,20 +77,20 @@ d3.text('unemploymentCLEAN.csv','text/csv', function(text) {
 			}
 		}
 		// Object to be used to get unemployment rates for each country "Country Code : Array of unemployment values"
-		nameAndValues[countryCode] = unemploymentValues;
+		//nameAndValues[countryCode] = unemploymentValues;
 
-		// vis.append("path").data([currData]).attr("country", countryData[i][0]).attr("class", () => {
-		// 	// Gets correct className based on development level
-		// 	var className;
-		// 	if (udevCountries.indexOf(countryCode) > -1) {
-		// 		className = 'UDEV';
-		// 	} else if (devingCountries.indexOf(countryCode) > -1) {
-		// 		className = 'DEVING';
-		// 	} else if (devCountries.indexOf(countryCode) > -1) {
-		// 		className = 'DEV';
-		// 	}
-		// 	return className;
-		// }).attr("id", countryCode).attr("d",line).on("mouseover",onmouseover).on("mouseout",onmouseout);
+		vis.append("path").data([currData]).attr("country", countryData[i][0]).attr("class", () => {
+			// Gets correct className based on development level
+			var className;
+			if (udevCountries.indexOf(countryCode) > -1) {
+				className = 'UDEV';
+			} else if (devingCountries.indexOf(countryCode) > -1) {
+				className = 'DEVING';
+			} else if (devCountries.indexOf(countryCode) > -1) {
+				className = 'DEV';
+			}
+			return className;
+		}).attr("id", countryCode).attr("d",line).on("mouseover",onmouseover).on("mouseout",onmouseout);
 
 		// vis.append("svg:circle").data([currData]).attr("country", countryData[i][0]).attr("class", () => {
 		// 	// Gets correct className based on development level
@@ -111,6 +115,7 @@ d3.text('disasterYears.csv', 'text/csv', function(data) {
 		var yearData = disYears[i].slice(1);
 		var countryName = disYears[i][0]
 		var countryValues = nameAndValues[countryName];
+		console.log(countryValues)
 		if(typeof countryValues !== 'undefined') {
 			console.log("here: "+countryName)
 			if(typeof countryName!== 'undefined') {
@@ -120,25 +125,26 @@ d3.text('disasterYears.csv', 'text/csv', function(data) {
 					.append('circle')
 					.attr("cx", function(d) {
 						value = x(d);
-						if(value == 0) {
+						yVal = y(countryValues[d]);
+						if(value == 0 || isNaN(yVal) || yVal==0) {
 							return null;
 						} else {
 							return value;
 						}
 					})
 		 			.attr("cy", function(d) {
-		 				value = y(countryValues[2014-d]);
-		 				if(!isNaN(value)) {
+		 				value = y(countryValues[d]);
+		 				if(!isNaN(value) && value!=0) {
 		 					return value;
 		 				} else {
 		 					return null;
 		 				}
 
 		 			})
-		 			.attr("r", 2)
+		 			.attr("r", .8)
 		 			.attr("class",function(d) {return countryName;})
-		 			.style("fill", "black")
-		 			.attr("country", countryName).attr("class", () => {
+		 			//.style("fill", "black")
+		 			.attr("country", names[countryName]).attr("class", () => {
 						// Gets correct className based on development level
 						var className;
 						if (udevCountries.indexOf(countryName) > -1) {

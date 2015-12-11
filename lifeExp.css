@@ -75,13 +75,13 @@ a {
 	padding-top: 20px;
 }
 
-path {
+path, circle {
 	stroke: #e2e2e2;
 	stroke-width: 0.9;
 	fill: none;
 }
 
-path.current, path.highlight.current {
+path.current, path.highlight.current, circle.current, circle.current {
 	stroke: #000;
 	stroke-width: 1.7;
 
