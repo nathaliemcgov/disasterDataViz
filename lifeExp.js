@@ -366,7 +366,7 @@ d3.text('disasterData.csv', 'text/csv', function(data) {
 
 // Makes x axis
 vis.append("svg:line").attr("x1",x(1991)).attr("y1",y(startValue)).attr("x2",x(2012)).attr("y2",y(startValue)).attr("class","axis");
-vis.append("text").style("text-anchor","middle").text("Year").attr("x",450).attr("y",540);
+// vis.append("text").style("text-anchor","middle").text("Year").attr("x",450).attr("y",540);
 
 vis.append("svg:line").attr("x1",x(startYear)).attr("y1",y(startValue)).attr("x2",x(startYear)).attr("y2",y(endValue)).attr("class","axis")
 

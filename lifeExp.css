@@ -132,6 +132,10 @@ text {
 	float: left;
 }
 
+#xAxisLabel {
+	text-align: center;
+}
+
 #dropdown {
 	margin-left: 40px;
 }
