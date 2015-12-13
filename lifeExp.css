@@ -150,7 +150,7 @@ text {
 	stroke: #000;
 }
 
-#cite {
+#cite ,#WIP {
 	font-size: 0.8em;
 	text-align: right;
 	margin-top: 10px;

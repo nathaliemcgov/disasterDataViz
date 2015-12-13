@@ -214,7 +214,7 @@ d3.text('disasterIntensity.csv', 'text/csv', function(data) {
 
 		 			})
 		 			.attr("r", function(d) {
-		 				return d*(.4);
+		 				return d;
 		 			})
 		 			.style("fill", "rgb(255,0,0)")
 		 			.attr("country", names[countryCode]).attr("class", () => {
@@ -412,15 +412,15 @@ function onmouseover(d, i) {
 	
 	var currClass = d3.select(this).attr("class");
 	d3.select(this).attr("class", currClass + " current");
-	var selector = '.'+d3.select(this).attr("country");
-	console.log(selector);
-	var otherElems = d3.selectAll(selector);
-	console.log(otherElems.data([0])[0]);
-	for(elm in otherElems) {
-		console.log(elm);
-		var otherClass = d3.select(elm).attr("class");
-		d3.select(elm).attr("class", otherClass + " current");
-	}
+	//var selector = '.'+d3.select(this).attr("country");
+	//console.log(selector);
+	//var otherElems = d3.selectAll(selector);
+	//console.log(otherElems.data([0])[0]);
+	//for(elm in otherElems) {
+	//	console.log(elm);
+	//	var otherClass = d3.select(elm).attr("class");
+	//	d3.select(elm).attr("class", otherClass + " current");
+	//}
 
 	var country = $(this).attr("country");		// Gets the country hovered over
 	var countryCode = $(this).attr("id");
