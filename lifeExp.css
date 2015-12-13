@@ -98,9 +98,9 @@ circle {
 	opacity: .2;
 }
 
-circle.current, circle.highlight.current {
+/*circle.current, circle.highlight.current {
 	opacity: 1;
-}
+}*/
 
 .UDEV.highlight {
 	stroke: #895881;
