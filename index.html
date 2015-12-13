@@ -32,7 +32,7 @@
       <p>Every year, hundreds of natural disasters occur across the globe. Earthquakes, tsunamis, storms, droughts, wildfires, floods, epidemics, landslides and volcanic activity affect hundreds of economic structures throughout the world, yet some countries are economically stronger than others. Natural disasters do not occur based off of the resilience or development status of a country, and no one can control when or where these disasters may strike. Therefore, the economic recovery periods of a country may vary based on both economic development and the severity of the natural disaster.</p>
       <fieldset>
         <div id="filtersAndDropdown">
-          <span id="filterTitle">Country Development Status Filters:</span>
+          <p id="filterTitle">Country Development Status Filters:</p>
           <div id="filters">
             <a id="UDEV">Underdeveloped</a>
             <a id="DEVING">Developing</a>
@@ -42,6 +42,13 @@
             <select id="countryList" onchange="changeCountry()">
               <option id="noCountry">Country Not Selected</option>
             </select>
+          </div>
+          <div id="warningForUser">
+            <p>*Reload page until <span class="redText">red circles</span> appear on graph below*</p>
+          </div>
+          <div id="circleLegend">
+            <p><span class="redText">Red circle:</span> Single instance of a natural disaster</p>
+            <p>Size of circle: Disaster of level 6 is largest. Size of circles decrease from this size.</p>
           </div>
         </div>
       </fieldset>
@@ -53,10 +60,13 @@
         </div>
         <div id="blurb-content"></div>
         <br>
-        <div id="yAxisLabel">Unemployment Rate (%)</div>
       </div>
-        <br>
-        <div id="vis"></div>
+        <div id="vis">
+          <br>
+          <div id="yAxisLabel">
+            <p>Unemployment Rate (%)</p>
+          </div>
+        </div>
         <div id="xAxisLabel">Year</div> 
         <div id="cite">Source: The World Bank; Graphic by: Team Dataflower</div>
         <div id="WIP">She's still a WIP, be patient! TDF :)</div> 

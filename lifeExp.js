@@ -194,7 +194,7 @@ d3.text('disasterIntensity.csv', 'text/csv', function(data) {
 				.enter()
 					.append('circle')
 					.attr("cx", function(d,i) {
-						year = 1990+i;
+						year = 1990 + i;
 						value = x(year);
 						yVal = y(countryValues[year]);
 						if(value == 0 || isNaN(yVal) || yVal==0 && d > 0) {
