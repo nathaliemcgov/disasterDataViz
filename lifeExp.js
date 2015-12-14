@@ -481,7 +481,7 @@ $(document).ready(function() {
 		
 		var blurb= '<h2>' + countryName[countryName.indexOf(country)] + '</h2>';
 		if (countryDisasterTotal) {	
-			blurb += "<p>Experienced " + countryDisasterTotal + " disasters from 1991 through 2014.</p>";
+			blurb += "<p>Experienced " + countryDisasterTotal + " disasters (over level 4) from 1991 through 2014.</p>";
 		}
 
 		$("#default-blurb").hide();
