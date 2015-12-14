@@ -117,6 +117,50 @@ $(document).ready(function() {
 
 		addToDropDown();	// Adds country names to dropdown
 	});
+	var countryCodeIntensities = {};
+	d3.text('disasterIntensity.csv', 'text/csv', function(data) {
+		var disCountry = d3.csv.parseRows(data);
+		
+		for(i = 1; i < disCountry.length; i++) {
+
+			var countryCode = disCountry[i][0];
+			var intensities = disCountry[i].slice(1);
+			countryCodeIntensities[countryCode] = intensities;
+			var countryValues = nameAndValues[countryCode];
+			if(typeof countryValues !== 'undefined') {
+				vis.selectAll('.'+countryCode)
+					.data(intensities)
+					.enter()
+						.append('circle')
+						.attr("cx", function(d,i) {
+							year = 1990 + i;
+							value = x(year);
+							yVal = y(countryValues[year]);
+							if(value == 0 || isNaN(yVal) || yVal==0 && d > 0) {
+								return null;
+							} else {
+								return value;
+							}
+						})
+			 			.attr("cy", function(d,i) {
+			 				year=1990+i
+			 				value = y(countryValues[year]);
+			 				if(!isNaN(value) && value!=0 && d > 0) {
+			 					return value;
+			 				} else {
+			 					return null;
+			 				}
+
+			 			})
+			 			.attr("r", function(d) {
+			 				return d;
+			 			})
+			 			.style("fill", "rgb(255,0,0)")
+			 			.attr("country", names[countryCode]).attr("class", countryCode + ' dot')
+			 			.on("mouseover",onmouseoverDot).on("mouseout",onmouseoutDot);
+			}
+		}
+	});
 
 	// Adds country names to dropdown country selector
 	function addToDropDown() {
@@ -131,6 +175,47 @@ $(document).ready(function() {
 		var dropDownValue = $("#countryList").val();		// Gets country name selected
 		vis.selectAll("path").remove();
 		drawUnemployment(dropDownValue, nameAndValues, values);
+
+		//dots
+		vis.selectAll("circle").remove();
+		drawDisasters(dropDownValue, nameAndValues, countryCodeIntensities);
+	}
+	$('#countryList').click(changeCountry);
+
+	function drawDisasters(dropDownValue, nameAndValues, countryCodeIntensities) {
+		countryCode = countryNameToCode[dropDownValue];
+		var intensities = countryCodeIntensities[countryCode];
+		var countryValues = nameAndValues[countryCode];
+		vis.selectAll('.'+countryCode)
+					.data(intensities)
+					.enter()
+						.append('circle')
+						.attr("cx", function(d,i) {
+							year = 1990 + i;
+							value = x(year);
+							yVal = y(countryValues[year]);
+							if(value == 0 || isNaN(yVal) || yVal==0 && d > 0) {
+								return null;
+							} else {
+								return value;
+							}
+						})
+			 			.attr("cy", function(d,i) {
+			 				year=1990+i
+			 				value = y(countryValues[year]);
+			 				if(!isNaN(value) && value!=0 && d > 0) {
+			 					return value;
+			 				} else {
+			 					return null;
+			 				}
+
+			 			})
+			 			.attr("r", function(d) {
+			 				return d;
+			 			})
+			 			.style("fill", "rgb(255,0,0)")
+			 			.attr("country", names[countryCode]).attr("class", countryCode + ' dot')
+			 			.on("mouseover",onmouseoverDot).on("mouseout",onmouseoutDot);
 	}
 
 	// Draws out unemployment lines
@@ -182,47 +267,7 @@ $(document).ready(function() {
 			}).attr("id", countryCode).attr("d",line).on("mouseover",onmouseoverLine).on("mouseout",onmouseout);
 		}
 	}
-	d3.text('disasterIntensity.csv', 'text/csv', function(data) {
-		var disCountry = d3.csv.parseRows(data);
 
-		for(i = 1; i < disCountry.length; i++) {
-			var countryCode = disCountry[i][0];
-			var intensities = disCountry[i].slice(1);
-			var countryValues = nameAndValues[countryCode];
-			if(typeof countryValues !== 'undefined') {
-				vis.selectAll('.'+countryCode)
-					.data(intensities)
-					.enter()
-						.append('circle')
-						.attr("cx", function(d,i) {
-							year = 1990 + i;
-							value = x(year);
-							yVal = y(countryValues[year]);
-							if(value == 0 || isNaN(yVal) || yVal==0 && d > 0) {
-								return null;
-							} else {
-								return value;
-							}
-						})
-			 			.attr("cy", function(d,i) {
-			 				year=1990+i
-			 				value = y(countryValues[year]);
-			 				if(!isNaN(value) && value!=0 && d > 0) {
-			 					return value;
-			 				} else {
-			 					return null;
-			 				}
-
-			 			})
-			 			.attr("r", function(d) {
-			 				return d;
-			 			})
-			 			.style("fill", "rgb(255,0,0)")
-			 			.attr("country", names[countryCode]).attr("class", countryCode + ' dot')
-			 			.on("mouseover",onmouseoverDot).on("mouseout",onmouseoutDot);
-			}
-		}
-	})
 
 	// d3.text('disasterYears.csv', 'text/csv', function(data) {
 	// 	var disYears = d3.csv.parseRows(data);
