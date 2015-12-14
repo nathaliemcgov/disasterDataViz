@@ -194,11 +194,13 @@ $(document).ready(function() {
 			vis.selectAll("circle").remove();
 			drawDisasters(dropDownValue, nameAndValues, countryCodeIntensities);
 		} else {
+			vis.selectAll("path").remove();
 			drawAllLines();
+			vis.selectAll("circle").remove();
 			drawAllCircles();
 		}
 	}
-	$('#countryList').click(changeCountry);
+	$('#countryList').change(changeCountry);
 
 	function drawDisasters(dropDownValue, nameAndValues, countryCodeIntensities) {
 		countryCode = countryNameToCode[dropDownValue];
